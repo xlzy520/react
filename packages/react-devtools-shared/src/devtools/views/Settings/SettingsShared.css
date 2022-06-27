@@ -16,6 +16,11 @@
 
 .OpenInURLSetting {
   margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+}
+.OpenInURLMethod{
+  margin-left: 1rem;
 }
 
 .OptionGroup {

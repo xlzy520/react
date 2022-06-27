@@ -59,6 +59,7 @@ export default function InspectedElementWrapper(_: Props) {
     inspectedElementID !== null
       ? store.getElementByID(inspectedElementID)
       : null;
+  const openInEditorByNewTab = store._openInEditorByNewTab;
 
   const highlightElement = useCallback(() => {
     if (element !== null && inspectedElementID !== null) {
@@ -225,8 +226,12 @@ export default function InspectedElementWrapper(_: Props) {
     const url = new URL(editorURL);
     url.href = url.href.replace('{path}', source.fileName);
     url.href = url.href.replace('{line}', String(source.lineNumber));
-    window.open(url);
-  }, [inspectedElement, editorURL]);
+    if (openInEditorByNewTab) {
+      window.open(url);
+    } else {
+      fetch(url.href);
+    }
+  }, [inspectedElement, editorURL, openInEditorByNewTab]);
 
   if (element === null) {
     return (

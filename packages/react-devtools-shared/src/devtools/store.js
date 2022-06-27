@@ -61,6 +61,8 @@ const LOCAL_STORAGE_COLLAPSE_ROOTS_BY_DEFAULT_KEY =
   'React::DevTools::collapseNodesByDefault';
 const LOCAL_STORAGE_RECORD_CHANGE_DESCRIPTIONS_KEY =
   'React::DevTools::recordChangeDescriptions';
+const LOCAL_STORAGE_OPEN_IN_EDITOR_BY_NEW_TAB_KEY =
+  'React::DevTools::openInEditorByNewTab';
 
 type ErrorAndWarningTuples = Array<{|id: number, index: number|}>;
 
@@ -88,6 +90,7 @@ export type Capabilities = {|
 export default class Store extends EventEmitter<{|
   backendVersion: [],
   collapseNodesByDefault: [],
+  openInEditorByNewTab: [],
   componentFilters: [],
   error: [Error],
   mutated: [[Array<number>, Map<number, number>]],
@@ -113,6 +116,8 @@ export default class Store extends EventEmitter<{|
 
   // Should new nodes be collapsed by default when added to the tree?
   _collapseNodesByDefault: boolean = true;
+  // Should open in editor be opened in a new tab?
+  _openInEditorByNewTab: boolean = true;
 
   _componentFilters: Array<ComponentFilter>;
 
@@ -198,6 +203,9 @@ export default class Store extends EventEmitter<{|
 
     this._collapseNodesByDefault =
       localStorageGetItem(LOCAL_STORAGE_COLLAPSE_ROOTS_BY_DEFAULT_KEY) ===
+      'true';
+    this._openInEditorByNewTab =
+      localStorageGetItem(LOCAL_STORAGE_OPEN_IN_EDITOR_BY_NEW_TAB_KEY) ===
       'true';
 
     this._recordChangeDescriptions =
@@ -327,6 +335,19 @@ export default class Store extends EventEmitter<{|
     );
 
     this.emit('collapseNodesByDefault');
+  }
+  get openInEditorByNewTab(): boolean {
+    return this._openInEditorByNewTab;
+  }
+  set openInEditorByNewTab(value: boolean): void {
+    this._openInEditorByNewTab = value;
+
+    localStorageSetItem(
+      LOCAL_STORAGE_OPEN_IN_EDITOR_BY_NEW_TAB_KEY,
+      value ? 'false' : 'true',
+    );
+
+    this.emit('openInEditorByNewTab');
   }
 
   get componentFilters(): Array<ComponentFilter> {
