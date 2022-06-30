@@ -65,13 +65,32 @@ export default function ComponentsSettings(_: {||}) {
     }),
     [store],
   );
+  const openInEditorByNewTabSubscription = useMemo(
+    () => ({
+      getCurrentValue: () => store.openInEditorByNewTab,
+      subscribe: (callback: Function) => {
+        store.addListener('openInEditorByNewTab', callback);
+        return () => store.removeListener('openInEditorByNewTab', callback);
+      },
+    }),
+    [store],
+  );
   const collapseNodesByDefault = useSubscription<boolean>(
     collapseNodesByDefaultSubscription,
+  );
+  const openInEditorByNewTab = useSubscription<boolean>(
+    openInEditorByNewTabSubscription,
   );
 
   const updateCollapseNodesByDefault = useCallback(
     ({currentTarget}) => {
       store.collapseNodesByDefault = !currentTarget.checked;
+    },
+    [store],
+  );
+  const updateOpenInEditorByNewTab = useCallback(
+    ({currentTarget}) => {
+      store.openInEditorByNewTab = !currentTarget.checked;
     },
     [store],
   );
@@ -289,6 +308,13 @@ export default function ComponentsSettings(_: {||}) {
             setOpenInEditorURL(event.target.value);
           }}
         />
+        <input
+          class={styles.OpenInURLMethod}
+          type="checkbox"
+          checked={!openInEditorByNewTab}
+          onChange={updateOpenInEditorByNewTab}
+        />
+        New Tab
       </label>
 
       <div className={styles.Header}>Hide components where...</div>
